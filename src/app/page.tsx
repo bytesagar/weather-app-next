@@ -89,64 +89,70 @@ export default function Home() {
         )}
         <ErrorWrapper error={errorHour || errorInfo}>
           <>
-            <Box
-              sx={{
-                border: "1px solid #e0e5eb",
-                padding: "20px",
-                display: "flex",
-                justifyContent: "space-between",
-                borderRadius: "4px",
-              }}
-            >
+            {!!weatherInfo && (
               <Box
                 sx={{
+                  border: "1px solid #e0e5eb",
+                  padding: "20px",
                   display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-
-                  borderRadius: "8px",
+                  justifyContent: "space-between",
+                  borderRadius: "4px",
                 }}
               >
-                <Typography variant="h5">
-                  {weatherInfo?.city}, {weatherInfo?.country}
-                </Typography>
-                <Typography>{weatherInfo?.date}</Typography>
-              </Box>
-              <Box display="flex" width="500px" gap={4} flexWrap={"wrap"}>
-                <CurrentWeatherStat weather={weatherInfo} />
-                <WeatherInfoWrapper>
-                  <WeatherInfoWrapper.Value>
-                    {weatherInfo?.highestTemp}&#176;
-                  </WeatherInfoWrapper.Value>
-                  <WeatherInfoWrapper.Title>High Temp</WeatherInfoWrapper.Title>
-                </WeatherInfoWrapper>
-                <WeatherInfoWrapper>
-                  <WeatherInfoWrapper.Value>
-                    {weatherInfo?.lowestTemp}&#176;
-                  </WeatherInfoWrapper.Value>
-                  <WeatherInfoWrapper.Title>Low Temp</WeatherInfoWrapper.Title>
-                </WeatherInfoWrapper>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
 
-                <WeatherInfoWrapper>
-                  <WeatherInfoWrapper.Value>
-                    {weatherInfo?.humidity}%
-                  </WeatherInfoWrapper.Value>
-                  <WeatherInfoWrapper.Title>Rain</WeatherInfoWrapper.Title>
-                </WeatherInfoWrapper>
-                <WeatherInfoWrapper>
-                  <WeatherInfoWrapper.Value>
-                    {weatherInfo?.sunrise}
-                  </WeatherInfoWrapper.Value>
-                  <WeatherInfoWrapper.Title>Sunrise</WeatherInfoWrapper.Title>
-                </WeatherInfoWrapper>
-                <WeatherInfoWrapper>
-                  <WeatherInfoWrapper.Value>
-                    {weatherInfo?.sunset}
-                  </WeatherInfoWrapper.Value>
-                  <WeatherInfoWrapper.Title>Sunset</WeatherInfoWrapper.Title>
-                </WeatherInfoWrapper>
+                    borderRadius: "8px",
+                  }}
+                >
+                  <Typography variant="h5">
+                    {weatherInfo?.city}, {weatherInfo?.country}
+                  </Typography>
+                  <Typography>{weatherInfo?.date}</Typography>
+                </Box>
+                <Box display="flex" width="500px" gap={4} flexWrap={"wrap"}>
+                  <CurrentWeatherStat weather={weatherInfo} />
+                  <WeatherInfoWrapper>
+                    <WeatherInfoWrapper.Value>
+                      {weatherInfo?.highestTemp}&#176;
+                    </WeatherInfoWrapper.Value>
+                    <WeatherInfoWrapper.Title>
+                      High Temp
+                    </WeatherInfoWrapper.Title>
+                  </WeatherInfoWrapper>
+                  <WeatherInfoWrapper>
+                    <WeatherInfoWrapper.Value>
+                      {weatherInfo?.lowestTemp}&#176;
+                    </WeatherInfoWrapper.Value>
+                    <WeatherInfoWrapper.Title>
+                      Low Temp
+                    </WeatherInfoWrapper.Title>
+                  </WeatherInfoWrapper>
+
+                  <WeatherInfoWrapper>
+                    <WeatherInfoWrapper.Value>
+                      {weatherInfo?.humidity}%
+                    </WeatherInfoWrapper.Value>
+                    <WeatherInfoWrapper.Title>Rain</WeatherInfoWrapper.Title>
+                  </WeatherInfoWrapper>
+                  <WeatherInfoWrapper>
+                    <WeatherInfoWrapper.Value>
+                      {weatherInfo?.sunrise}
+                    </WeatherInfoWrapper.Value>
+                    <WeatherInfoWrapper.Title>Sunrise</WeatherInfoWrapper.Title>
+                  </WeatherInfoWrapper>
+                  <WeatherInfoWrapper>
+                    <WeatherInfoWrapper.Value>
+                      {weatherInfo?.sunset}
+                    </WeatherInfoWrapper.Value>
+                    <WeatherInfoWrapper.Title>Sunset</WeatherInfoWrapper.Title>
+                  </WeatherInfoWrapper>
+                </Box>
               </Box>
-            </Box>
+            )}
 
             <Box display={"flex"} gap={"8px"} overflow={"auto"}>
               {hourlyData?.map((item) => (
