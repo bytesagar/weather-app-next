@@ -76,11 +76,6 @@ export default function Home() {
                 <SearchOutlined />
               </InputAdornment>
             ),
-            endAdornment: loading ? (
-              <InputAdornment position="start">
-                <CircularProgress />
-              </InputAdornment>
-            ) : null,
           }}
           placeholder="Search city, country"
           sx={{ width: "100%" }}

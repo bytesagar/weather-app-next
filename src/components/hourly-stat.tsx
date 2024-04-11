@@ -18,7 +18,6 @@ export const HourlyStat = ({
   return (
     <Box
       sx={{
-        // height: "200px",
         width: "200px",
         display: "flex",
         flexDirection: "column",
