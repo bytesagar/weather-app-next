@@ -1,95 +1,190 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { HourlyStat } from "@/components/hourly-stat";
+import { useFetcData } from "@/hooks/useFetchData";
+import { useFetchHourlyData } from "@/hooks/useFetchHourlyData";
+import { useGeolocation } from "@/hooks/useGeoLocation";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  Input,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 
+import { CurrentWeatherStat } from "@/components/current-weather-stat";
+import { AccountCircle, SearchOutlined } from "@mui/icons-material";
+import { useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+import { WeatherInfoWrapper } from "@/components/weather-info";
+import { Loader } from "@/components/loader";
 export default function Home() {
+  const [query, setQuery] = useState("");
+
+  const searchKey = useDebounce(query, 800);
+
+  const {
+    loading: locationLoading,
+    error,
+    latitude,
+    longitude,
+  } = useGeolocation();
+
+  const {
+    data: weatherInfo,
+    loading,
+    error: errorInfo,
+  } = useFetcData({
+    searchKey: searchKey,
+    lat: latitude,
+    lon: longitude,
+  });
+
+  const { data: hourlyData, error: errorHour } = useFetchHourlyData({
+    lat: latitude,
+    lon: longitude,
+    searchKey: searchKey,
+  });
+
+  if (locationLoading) {
+    return <Loader />;
+  }
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+    <Box
+      sx={{
+        height: "100vh",
+        width: "100%",
+      }}
+    >
+      <Container
+        maxWidth="md"
+        sx={{
+          padding: "16px 0px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          flex: 1,
+        }}
+      >
+        <TextField
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchOutlined />
+              </InputAdornment>
+            ),
+            endAdornment: loading ? (
+              <InputAdornment position="start">
+                <CircularProgress />
+              </InputAdornment>
+            ) : null,
+          }}
+          placeholder="Search city, country"
+          sx={{ width: "100%" }}
+          onChange={(e) => setQuery(e.target.value)}
         />
-      </div>
+        {!!error && (
+          <Alert severity="info">
+            Please allow location permission to view weather info of your
+            location. Or search for location.
+          </Alert>
+        )}
+        <ErrorWrapper error={errorHour || errorInfo}>
+          <>
+            <Box
+              sx={{
+                border: "1px solid #e0e5eb",
+                padding: "20px",
+                display: "flex",
+                justifyContent: "space-between",
+                borderRadius: "4px",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+                  borderRadius: "8px",
+                }}
+              >
+                <Typography variant="h5">
+                  {weatherInfo?.city}, {weatherInfo?.country}
+                </Typography>
+                <Typography>{weatherInfo?.date}</Typography>
+              </Box>
+              <Box display="flex" width="500px" gap={4} flexWrap={"wrap"}>
+                <CurrentWeatherStat weather={weatherInfo} />
+                <WeatherInfoWrapper>
+                  <WeatherInfoWrapper.Value>
+                    {weatherInfo?.highestTemp}&#176;
+                  </WeatherInfoWrapper.Value>
+                  <WeatherInfoWrapper.Title>High Temp</WeatherInfoWrapper.Title>
+                </WeatherInfoWrapper>
+                <WeatherInfoWrapper>
+                  <WeatherInfoWrapper.Value>
+                    {weatherInfo?.lowestTemp}&#176;
+                  </WeatherInfoWrapper.Value>
+                  <WeatherInfoWrapper.Title>Low Temp</WeatherInfoWrapper.Title>
+                </WeatherInfoWrapper>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+                <WeatherInfoWrapper>
+                  <WeatherInfoWrapper.Value>
+                    {weatherInfo?.humidity}%
+                  </WeatherInfoWrapper.Value>
+                  <WeatherInfoWrapper.Title>Rain</WeatherInfoWrapper.Title>
+                </WeatherInfoWrapper>
+                <WeatherInfoWrapper>
+                  <WeatherInfoWrapper.Value>
+                    {weatherInfo?.sunrise}
+                  </WeatherInfoWrapper.Value>
+                  <WeatherInfoWrapper.Title>Sunrise</WeatherInfoWrapper.Title>
+                </WeatherInfoWrapper>
+                <WeatherInfoWrapper>
+                  <WeatherInfoWrapper.Value>
+                    {weatherInfo?.sunset}
+                  </WeatherInfoWrapper.Value>
+                  <WeatherInfoWrapper.Title>Sunset</WeatherInfoWrapper.Title>
+                </WeatherInfoWrapper>
+              </Box>
+            </Box>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+            <Box display={"flex"} gap={"8px"} overflow={"auto"}>
+              {hourlyData?.map((item) => (
+                <HourlyStat
+                  key={item.dt}
+                  temp={Math.floor(item.main.temp * 1) / 1}
+                  icon={item.weather[0].icon}
+                  month={item.dt_txt.slice(5, 7)}
+                  day={item.dt_txt.slice(8, 10)}
+                  hour={item.dt_txt.slice(11, 13)}
+                />
+              ))}
+            </Box>
+          </>
+        </ErrorWrapper>
+      </Container>
+    </Box>
   );
 }
+
+const ErrorWrapper = ({
+  error,
+  children,
+}: {
+  error: boolean;
+  children: React.ReactNode;
+}) => {
+  if (error) {
+    return (
+      <Alert severity="error">
+        Sorry the specified location was not found!
+      </Alert>
+    );
+  }
+  return <>{children}</>;
+};
