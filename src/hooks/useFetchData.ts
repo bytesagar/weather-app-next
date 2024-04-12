@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_STATUS, days, months } from "@/constants/constants";
+import { Visibility } from "@mui/icons-material";
 
 export interface WeatherData {
   city: string;
@@ -17,6 +18,9 @@ export interface WeatherData {
   humidity: number;
   wind: number;
   icon: string;
+  visibility: number;
+  pressure: number;
+  feelsLike: number;
 }
 
 export const useFetcData = ({
@@ -64,6 +68,8 @@ export const useFetcData = ({
           city: currentData.name,
           country: currentData.sys.country,
           date,
+          feelsLike: currentData?.main?.feels_like,
+          pressure: currentData?.main?.pressure,
           description: currentData.weather[0].description,
           main: currentData.weather[0].main,
           temp: currentData.main.temp,
@@ -75,6 +81,7 @@ export const useFetcData = ({
           humidity: currentData.main.humidity,
           wind: currentData.wind.speed,
           icon: currentData?.weather[0]?.icon,
+          visibility: currentData?.visibility,
         };
         setData(weatherInfoData);
         setError(false);

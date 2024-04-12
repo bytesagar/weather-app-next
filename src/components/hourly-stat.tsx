@@ -15,6 +15,9 @@ export const HourlyStat = ({
   icon: string;
 }) => {
   const iconUrl = `https://openweathermap.org/img/w/${icon}.png`;
+  const today = new Date().getDate();
+  const currentHour = new Date().getHours();
+  const isCurrent = today === Number(day) && currentHour === Number(hour);
   return (
     <Box
       sx={{
@@ -22,6 +25,9 @@ export const HourlyStat = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        background: isCurrent ? "rgba(255,255,255,0.6)" : "white",
+        borderRadius: "4px",
+        padding: "8px 12px",
       }}
     >
       <Typography align="center">
@@ -33,7 +39,7 @@ export const HourlyStat = ({
         src={iconUrl}
         alt="icon"
       />
-      <Typography>{temp}&#176;</Typography>
+      <Typography variant="h5">{temp}&#176;</Typography>
     </Box>
   );
 };
